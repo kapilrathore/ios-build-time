@@ -1,0 +1,6 @@
+2213.18ms	/Users/kapilrathore/Documents/demo/CompileTimeTests/CompileTimeTests/Tests.swift:68:41	getter testComputedProperty1
+14.55ms	/Users/kapilrathore/Documents/demo/CompileTimeTests/CompileTimeTests/Tests.swift:89:41	getter testComputedProperty2
+
+17.33ms	/Users/kapilrathore/Documents/demo/CompileTimeTests/CompileTimeTests/Tests.swift:27:18	instance method typeInference1()
+6.31ms	/Users/kapilrathore/Documents/demo/CompileTimeTests/CompileTimeTests/Tests.swift:38:18	instance method typeInference2()
+4.64ms	/Users/kapilrathore/Documents/demo/CompileTimeTests/CompileTimeTests/Tests.swift:50:18	instance method typeInference3()
