@@ -12,9 +12,12 @@ class CompileTimeTests {
         var email: String?
         var displayName: String?
         var userID: String?
-        var isAgent: Bool?
+        var isParent: Bool?
         var accountType: String?
         var newProperty: [SomeProperty]?
+        var address: String?
+        var phoneNumber: String?
+        var parentId: String?
         
         struct SomeProperty {
             var id: Int?
@@ -30,31 +33,43 @@ class CompileTimeTests {
             "email": user?.email ?? "",
             "name": user?.displayName ?? "",
             "user_id": user?.userID ?? "",
-            "account_type": user?.isAgent == true ? "Agent" : "Consumer",
+            "is_parent": user?.isParent ?? false,
             "category": user?.accountType ?? "",
+            "address": user?.address ?? "",
+            "phoneNumber": user?.phoneNumber ?? "",
+            "parentId": user?.parentId ?? "",
+            "product": "identity",
+            "email": user?.email ?? "",
+            "name": user?.displayName ?? "",
+            "user_id": user?.userID ?? "",
+            "is_parent": user?.isParent ?? false,
+            "category": user?.accountType ?? "",
+            "address": user?.address ?? "",
+            "phoneNumber": user?.phoneNumber ?? "",
+            "parentId": user?.parentId ?? "",
         ])
     }
     
     private func typeInference2() {
         let props: [String: Any] = [
             "product": "identity",
-            "email": user?.email ?? "",
-            "name": user?.displayName ?? "",
-            "user_id": user?.userID ?? "",
-            "account_type": user?.isAgent == true ? "Agent" : "Consumer",
-            "category": user?.accountType ?? "",
-        ]
-        printProperties(props)
-    }
-    
-    private func typeInference3() {
-        let props: [String: Any] = [
+            "email": user?.email as Any,
+            "name": user?.displayName as Any,
+            "user_id": user?.userID as Any,
+            "account_type": user?.isParent as Any,
+            "category": user?.accountType as Any,
+            "address": user?.address as Any,
+            "phoneNumber": user?.phoneNumber as Any,
+            "parentId": user?.parentId as Any,
             "product": "identity",
             "email": user?.email as Any,
             "name": user?.displayName as Any,
             "user_id": user?.userID as Any,
-            "account_type": user?.isAgent == true ? "Agent" : "Consumer",
+            "account_type": user?.isParent as Any,
             "category": user?.accountType as Any,
+            "address": user?.address as Any,
+            "phoneNumber": user?.phoneNumber as Any,
+            "parentId": user?.parentId as Any,
         ]
         printProperties(props)
     }
@@ -66,50 +81,18 @@ class CompileTimeTests {
 
 extension CompileTimeTests {
     var testComputedProperty1: [String] {
-        let mobileNumbers = household?.contacts?
+        return household?.contacts?
             .compactMap { $0.contact?.phoneNumbers }
             .flatMap { $0 }
             .filter { $0.label == "Mobile" }
             .compactMap { $0.number }
-            .uniquified
-        
-        let phoneNumbers = household?.contacts?
-            .compactMap { $0.contact?.phoneNumbers }
-            .compactMap { $0.first }
-            .compactMap { $0.number }
-            .uniquified
-        
-        if mobileNumbers?.isEmpty == true {
-            return phoneNumbers ?? []
-        } else {
-            return mobileNumbers ?? []
-        }
+            .uniquified ?? []
     }
     
     var testComputedProperty2: [String] {
-        var mobileNumbers: [String] = []
-        let phoneNumbers: [String] = household?.contacts?.first?.contact?.phoneNumbers?.compactMap({ $0.number }) ?? []
-        
-        household?.contacts?.forEach({ linkedContact in
-            if let numbers = linkedContact.contact?.phoneNumbers?.filter({ $0.label == "Mobile" }).compactMap({ $0.number }) {
-                mobileNumbers.append(contentsOf: numbers)
-            }
-        })
-        
-        return mobileNumbers.isEmpty ? phoneNumbers.uniquified : mobileNumbers.uniquified
-    }
-    
-    var testComputedProperty3: [String] {
         let allPhoneNumbers: [ContactPhoneNumber] = (household?.contacts ?? []).flatMap { $0.contact?.phoneNumbers ?? [] }
         let mobileNumbers: [String] = allPhoneNumbers.filter { $0.label == "Mobile" }.compactMap { $0.number }
-        let uniqueMobileNumbers: [String] = mobileNumbers.uniquified
-        
-        if uniqueMobileNumbers.isEmpty {
-            let phoneNumbers: [String] = household?.contacts?.first?.contact?.phoneNumbers?.compactMap({ $0.number }) ?? []
-            return phoneNumbers
-        } else {
-            return uniqueMobileNumbers
-        }
+        return mobileNumbers.uniquified
     }
 }
 
